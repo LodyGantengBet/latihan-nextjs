@@ -9,8 +9,9 @@ export default function Navbar() {
   const menu = [
     { label: "Beranda", href: "/" },
     { label: "Event", href: "/event" },
+    { label: "Favorit", href: "/favorit" },
     { label: "Tentang", href: "/tentang" },
-    { label: "Kontak", href: "/kontak" }, // Menu keempat yang ditambahkan
+    { label: "Kontak", href: "/kontak" },
   ];
 
   return (

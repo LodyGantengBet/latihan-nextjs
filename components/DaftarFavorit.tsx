@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Event } from "@/data/events";
 
+function rupiah(n: number): string {
+  return "Rp " + n.toLocaleString("id-ID");
+}
+
 export default function DaftarFavorit() {
   const [semua, setSemua] = useState<Event[]>([]);
   const [ids, setIds] = useState<number[]>([]);
@@ -10,7 +14,7 @@ export default function DaftarFavorit() {
   const [galat, setGalat] = useState("");
 
   useEffect(() => {
-    // eeslint-disable-next-line react-hooks/set-state-in-effect
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIds(JSON.parse(localStorage.getItem("favorit") ?? "[]"));
 
     fetch("/api/events")
@@ -39,7 +43,8 @@ export default function DaftarFavorit() {
             className="text-blue-600 hover:underline"
           >
             {e.judul}
-          </Link>
+          </Link>{" "}
+          — {rupiah(e.harga)}
         </li>
       ))}
     </ul>

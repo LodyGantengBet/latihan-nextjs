@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link"; // Tambahkan import Link ini
 import { events, rupiah } from "../../../data/events";
 
 type PageProps = {
@@ -10,12 +11,10 @@ export default async function Detail({ params }: PageProps) {
 
   const event = events.find((e) => e.id === Number(id));
 
-  // Pastikan event ditemukan, jika tidak panggil notFound()
   if (!event) {
     notFound();
   }
 
-  // Hitung sisa tiket
   const sisa = event.kuota - event.terisi;
 
   return (
@@ -31,6 +30,14 @@ export default async function Detail({ params }: PageProps) {
       <p className="text-slate-600">
         Sisa {sisa} dari {event.kuota} tiket
       </p>
+
+      {/* Kode tantangan di bawah ini */}
+      <Link
+        href="/event"
+        className="mt-4 inline-block text-blue-600 hover:underline"
+      >
+        ← Kembali ke katalog
+      </Link>
     </article>
   );
 }

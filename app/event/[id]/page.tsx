@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { events, rupiah } from "../../../data/events";
+import { events, rupiah } from "@/data/events";
 import FormPesan from "@/components/FormPesan";
 
 type PageProps = {
@@ -36,15 +35,7 @@ export default async function Detail({ params }: PageProps) {
         Sisa {sisa} dari {event.kuota} tiket
       </p>
 
-      {/* Form pemesanan tiket */}
       <FormPesan event={event} />
-
-      <Link
-        href="/event"
-        className="mt-4 inline-block text-blue-600 hover:underline"
-      >
-        ← Kembali ke katalog
-      </Link>
     </article>
   );
 }

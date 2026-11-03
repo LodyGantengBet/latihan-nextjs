@@ -5,8 +5,6 @@ export type Event = {
   tanggal: string;
   lokasi: string;
   harga: number;
-  gambar: string;
-  deskripsi: string;
   kuota: number;
   terisi: number;
 };
@@ -14,99 +12,76 @@ export type Event = {
 export const events: Event[] = [
   {
     id: 1,
-    judul: "Workshop Web Development",
+    judul: "Workshop React untuk Pemula",
     kategori: "Workshop",
-    tanggal: "2026-11-10",
-    lokasi: "Lab Komputer",
-    harga: 15000,
-    gambar: "/events/workshop.jpg",
-    deskripsi: "Belajar membuat website menggunakan teknologi modern.",
-    kuota: 50,
-    terisi: 45,
+    tanggal: "2026-11-14",
+    lokasi: "Lab RPL",
+    harga: 50000,
+    kuota: 30,
+    terisi: 12,
   },
   {
     id: 2,
-    judul: "Go-Kart Community Battle",
-    kategori: "Race",
-    tanggal: "2026-11-15",
-    lokasi: "Sentul International Circuit",
-    harga: 150000,
-    gambar: "/events/gokart.jpg",
-    deskripsi: "Adu kecepatan go-kart seru bersama komunitas pembalap lokal.",
+    judul: "Turnamen Futsal Antar Kelas",
+    kategori: "Olahraga",
+    tanggal: "2026-11-20",
+    lokasi: "Lapangan Sekolah",
+    harga: 0,
     kuota: 20,
-    terisi: 17,
+    terisi: 20,
   },
   {
     id: 3,
-    judul: "AI & Future of Coding",
-    kategori: "Seminar",
-    tanggal: "2026-11-18",
-    lokasi: "Auditorium Utama",
-    harga: 0,
-    gambar: "/events/ai-seminar.jpg",
-    deskripsi:
-      "Mengenal perkembangan kecerdasan buatan dalam dunia pemrograman.",
-    kuota: 100,
-    terisi: 88,
+    judul: "Konser Musik Akustik",
+    kategori: "Musik",
+    tanggal: "2026-11-27",
+    lokasi: "Aula",
+    harga: 25000,
+    kuota: 150,
+    terisi: 96,
   },
   {
     id: 4,
-    judul: "UI/UX Design Hackathon",
-    kategori: "Competition",
-    tanggal: "2026-11-22",
-    lokasi: "Co-Working Space A",
-    harga: 25000,
-    gambar: "/events/uiux.jpg",
-    deskripsi: "Kompetisi desain antarmuka aplikasi dalam waktu terbatas.",
-    kuota: 40,
-    terisi: 32,
+    judul: "Bazar Karya Siswa",
+    kategori: "Bazar",
+    tanggal: "2026-12-03",
+    lokasi: "Halaman Depan",
+    harga: 0,
+    kuota: 300,
+    terisi: 41,
   },
   {
     id: 5,
-    judul: "React & Next.js Dev Meetup",
-    kategori: "Meetup",
-    tanggal: "2026-11-25",
-    lokasi: "Café Senopati",
-    harga: 50000,
-    gambar: "/events/meetup.jpg",
-    deskripsi:
-      "Diskusi santai seputar trik dan tips optimasi aplikasi Next.js.",
-    kuota: 30,
-    terisi: 26,
-  },
-  {
-    id: 6,
-    judul: "Fullstack JavaScript Bootcamp",
-    kategori: "Bootcamp",
-    tanggal: "2026-11-30",
-    lokasi: "Online (Zoom)",
-    harga: 100000,
-    gambar: "/events/bootcamp.jpg",
-    deskripsi:
-      "Pelatihan intensif pembuatan aplikasi dari frontend hingga backend.",
-    kuota: 60,
-    terisi: 50,
-  },
-
-  {
-    id: 7,
-    judul: "Go-Kart Championship 2026",
-    kategori: "Race",
+    judul: "Pelatihan Desain Poster",
+    kategori: "Workshop",
     tanggal: "2026-12-05",
-    lokasi: "Sentul International Circuit",
-    harga: 200000,
-    gambar: "/events/gokart-championship.jpg",
-    deskripsi:
-      "Kejuaraan go-kart bergengsi akhir tahun untuk para pencinta kecepatan.",
+    lokasi: "Lab Multimedia",
+    harga: 35000,
     kuota: 25,
     terisi: 25,
   },
+  {
+    id: 6,
+    judul: "Lomba Cerdas Cermat",
+    kategori: "Lomba",
+    tanggal: "2026-12-10",
+    lokasi: "Aula",
+    harga: 10000,
+    kuota: 60,
+    terisi: 18,
+  },
+  {
+    id: 7,
+    judul: "Ngaji",
+    kategori: "Lomba",
+    tanggal: "2026-12-30",
+    lokasi: "Masjid",
+    harga: 5000,
+    kuota: 1000,
+    terisi: 999,
+  },
 ];
 
-export function rupiah(nominal: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(nominal);
+export function rupiah(n: number) {
+  return n === 0 ? "Gratis" : "Rp " + n.toLocaleString("id-ID");
 }

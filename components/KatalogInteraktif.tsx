@@ -7,12 +7,14 @@ import KartuEvent from "./KartuEvent";
 export default function KatalogInteraktif({ events }: { events: Event[] }) {
   const [cari, setCari] = useState("");
   const [kategori, setKategori] = useState("Semua");
+  const [hanyaAdaTiket, setHanyaAdaTiket] = useState(false);
 
   const daftarKategori = ["Semua", ...new Set(events.map((e) => e.kategori))];
   const hasil = events.filter(
     (e) =>
       e.judul.toLowerCase().includes(cari.toLowerCase()) &&
-      (kategori === "Semua" || e.kategori === kategori),
+      (kategori === "Semua" || e.kategori === kategori) &&
+      (!hanyaAdaTiket || e.terisi < e.kuota),
   );
 
   return (
@@ -33,6 +35,14 @@ export default function KatalogInteraktif({ events }: { events: Event[] }) {
             <option key={k}>{k}</option>
           ))}
         </select>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={hanyaAdaTiket}
+            onChange={(e) => setHanyaAdaTiket(e.target.checked)}
+          />
+          Hanya yang masih ada tiket
+        </label>
       </div>
       {hasil.length === 0 ? (
         <p className="text-slate-500">Tidak ada event yang cocok.</p>

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import Link from "next/link"; // Tambahkan import Link ini
+import Link from "next/link";
 import { events, rupiah } from "../../../data/events";
+import FormPesan from "@/components/FormPesan";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -22,16 +23,22 @@ export default async function Detail({ params }: PageProps) {
       <span className="rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
         {event.kategori}
       </span>
+
       <h1 className="mt-2 text-3xl font-bold">{event.judul}</h1>
+
       <p className="mt-1 text-slate-500">
         {event.tanggal} · {event.lokasi}
       </p>
+
       <p className="mt-4 text-xl font-semibold">{rupiah(event.harga)}</p>
+
       <p className="text-slate-600">
         Sisa {sisa} dari {event.kuota} tiket
       </p>
 
-      {/* Kode tantangan di bawah ini */}
+      {/* Form pemesanan tiket */}
+      <FormPesan event={event} />
+
       <Link
         href="/event"
         className="mt-4 inline-block text-blue-600 hover:underline"

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { events, rupiah } from "@/data/events";
 import FormPesan from "@/components/FormPesan";
@@ -17,6 +18,10 @@ export default async function Detail({ params }: PageProps) {
   }
 
   const sisa = event.kuota - event.terisi;
+
+  const eventTerkait = events.filter(
+    (e) => e.kategori === event.kategori && e.id !== event.id,
+  );
 
   return (
     <article className="rounded-xl border bg-white p-6">
@@ -39,6 +44,27 @@ export default async function Detail({ params }: PageProps) {
       <TombolFavorit id={event.id} />
 
       <FormPesan event={event} />
+
+      <div className="mt-6">
+        <h2 className="mb-3 text-xl font-bold">Event Terkait</h2>
+
+        {eventTerkait.length === 0 ? (
+          <p className="text-slate-500">Belum ada event terkait.</p>
+        ) : (
+          <ul className="space-y-2">
+            {eventTerkait.map((e) => (
+              <li key={e.id}>
+                <Link
+                  href={`/event/${e.id}`}
+                  className="text-blue-600 hover:underline"
+                >
+                  {e.judul}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </article>
   );
 }

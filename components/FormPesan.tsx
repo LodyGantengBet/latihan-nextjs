@@ -1,94 +1,88 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useActionState, useState } from "react";
+import { pesanTiket, type HasilPesan } from "@/app/actions";
 import { rupiah, type Event } from "@/data/events";
 
-export default function FormPesan({ event }: { event: Event }) {
-  const sisa = event.kuota - event.terisi;
+export default function FormPesan({
+  event,
+  namaAwal,
+}: {
+  event: Event;
+  namaAwal: string;
+}) {
+  const awal: HasilPesan = {
+    berhasil: false,
+    pesan: "",
+    galat: {},
+    isian: { nama: namaAwal, email: "" },
+  };
 
-  const [nama, setNama] = useState("");
-  const [email, setEmail] = useState("");
+  const [hasil, kirim, sedangKirim] = useActionState(pesanTiket, awal);
   const [jumlah, setJumlah] = useState(1);
-  const [pesan, setPesan] = useState("");
-  const [berhasil, setBerhasil] = useState(false);
-
-  function kirim(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setBerhasil(false);
-
-    if (nama.trim().length < 3) {
-      setPesan("Nama minimal 3 huruf.");
-      return;
-    }
-
-    if (!email.includes("@")) {
-      setPesan("Email harus mengandung tanda @.");
-      return;
-    }
-
-    if (jumlah < 1) {
-      setPesan("Jumlah tiket minimal 1.");
-      return;
-    }
-
-    if (jumlah > sisa) {
-      setPesan(`Sisa tiket hanya ${sisa}.`);
-      return;
-    }
-
-    setPesan("");
-    setBerhasil(true);
-  }
+  const sisa = event.kuota - event.terisi;
 
   if (sisa === 0) {
     return <p className="mt-6 font-medium text-red-600">Tiket sudah habis.</p>;
   }
 
   return (
-    <form onSubmit={kirim} className="mt-6 space-y-3 border-t pt-4">
+    <form action={kirim} className="mt-6 space-y-3 border-t pt-4">
       <h2 className="text-lg font-semibold">Pesan tiket</h2>
+      <input type="hidden" name="eventId" value={event.id} />
 
-      <input
-        value={nama}
-        onChange={(e) => setNama(e.target.value)}
-        placeholder="Nama pemesan"
-        className="block w-full rounded border px-3 py-2"
-      />
+      <div>
+        <input
+          name="nama"
+          defaultValue={hasil.isian.nama}
+          placeholder="Nama pemesan"
+          className="block w-full rounded border px-3 py-2"
+        />
+        {hasil.galat.nama && (
+          <p className="text-sm text-red-600">{hasil.galat.nama}</p>
+        )}
+      </div>
 
-      <input
-        type="text"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email pemesan"
-        className="block w-full rounded border px-3 py-2"
-      />
+      <div>
+        <input
+          name="email"
+          defaultValue={hasil.isian.email}
+          placeholder="Email"
+          className="block w-full rounded border px-3 py-2"
+        />
+        {hasil.galat.email && (
+          <p className="text-sm text-red-600">{hasil.galat.email}</p>
+        )}
+      </div>
 
-      <input
-        type="number"
-        min="1"
-        value={jumlah}
-        onChange={(e) => setJumlah(Number(e.target.value))}
-        className="block w-32 rounded border px-3 py-2"
-      />
+      <div>
+        <input
+          name="jumlah"
+          type="number"
+          value={jumlah}
+          onChange={(e) => setJumlah(Number(e.target.value))}
+          className="block w-32 rounded border px-3 py-2"
+        />
+        {hasil.galat.jumlah && (
+          <p className="text-sm text-red-600">{hasil.galat.jumlah}</p>
+        )}
+      </div>
 
       <p>
         Total: <b>{rupiah(event.harga * jumlah)}</b>
       </p>
 
-      {pesan && <p className="text-red-600">{pesan}</p>}
-
-      {berhasil && (
-        <p className="text-green-700">
-          Terima kasih {nama}! {jumlah} tiket dipesan (belum tersimpan, ini
-          masih latihan).
+      {hasil.pesan && (
+        <p className={hasil.berhasil ? "text-green-700" : "text-red-600"}>
+          {hasil.pesan}
         </p>
       )}
 
       <button
-        type="submit"
-        className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        disabled={sedangKirim}
+        className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
       >
-        Pesan
+        {sedangKirim ? "Memproses..." : "Pesan"}
       </button>
     </form>
   );

@@ -1,70 +1,80 @@
-import Link from "next/link";
+import { Suspense } from "react";
+import Image from "next/image";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { events, rupiah } from "@/data/events";
+import { cookies } from "next/headers";
+import { rupiah } from "@/data/events";
+import { ambilEvent, hitungPesanan, hitungTotalTiket } from "@/data/ambil";
 import FormPesan from "@/components/FormPesan";
 import TombolFavorit from "@/components/TombolFavorit";
+import EventTerkait from "@/components/EventTerkait";
 
-type PageProps = {
+export async function generateMetadata({
+  params,
+}: {
   params: Promise<{ id: string }>;
-};
-
-export default async function Detail({ params }: PageProps) {
+}): Promise<Metadata> {
   const { id } = await params;
+  const event = await ambilEvent(Number(id));
+  if (!event) return { title: "Event tidak ditemukan" };
+  return {
+    title: event.judul,
+    description: `${event.kategori} di ${event.lokasi}, ${event.tanggal}. ${rupiah(event.harga)}.`,
+  };
+}
 
-  const event = events.find((e) => e.id === Number(id));
+export default async function Detail({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const event = await ambilEvent(Number(id));
+  if (!event) notFound();
 
-  if (!event) {
-    notFound();
-  }
-
+  const jumlahPesanan = await hitungPesanan(event.id);
+  const totalTiket = await hitungTotalTiket(event.id);
   const sisa = event.kuota - event.terisi;
-
-  const eventTerkait = events.filter(
-    (e) => e.kategori === event.kategori && e.id !== event.id,
-  );
+  const namaAwal = (await cookies()).get("nama")?.value ?? "";
 
   return (
     <article className="rounded-xl border bg-white p-6">
+      <div className="relative mb-4 aspect-[40/21] w-full">
+        <Image
+          src={event.gambar ?? "/img/default.png"}
+          alt={event.judul}
+          fill
+          sizes="(max-width: 1024px) 100vw, 960px"
+          priority
+          className="rounded-lg object-cover"
+        />
+      </div>
       <span className="rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
         {event.kategori}
       </span>
-
       <h1 className="mt-2 text-3xl font-bold">{event.judul}</h1>
-
       <p className="mt-1 text-slate-500">
         {event.tanggal} · {event.lokasi}
       </p>
-
       <p className="mt-4 text-xl font-semibold">{rupiah(event.harga)}</p>
-
       <p className="text-slate-600">
         Sisa {sisa} dari {event.kuota} tiket
       </p>
+      <p className="text-sm text-slate-500">
+        {jumlahPesanan} pesanan masuk ({totalTiket} tiket terjual) lewat EventKu
+      </p>
 
       <TombolFavorit id={event.id} />
+      <FormPesan event={event} namaAwal={namaAwal} />
 
-      <FormPesan event={event} />
-
-      <div className="mt-6">
-        <h2 className="mb-3 text-xl font-bold">Event Terkait</h2>
-
-        {eventTerkait.length === 0 ? (
-          <p className="text-slate-500">Belum ada event terkait.</p>
-        ) : (
-          <ul className="space-y-2">
-            {eventTerkait.map((e) => (
-              <li key={e.id}>
-                <Link
-                  href={`/event/${e.id}`}
-                  className="text-blue-600 hover:underline"
-                >
-                  {e.judul}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <section className="mt-6">
+        <h2 className="font-semibold">Event terkait</h2>
+        <Suspense
+          fallback={<p className="text-slate-400">Memuat event terkait..</p>}
+        >
+          <EventTerkait event={event} />
+        </Suspense>
+      </section>
     </article>
   );
 }

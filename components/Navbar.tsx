@@ -10,8 +10,10 @@ export default function Navbar() {
     { label: "Beranda", href: "/" },
     { label: "Event", href: "/event" },
     { label: "Favorit", href: "/favorit" },
+    { label: "Pesanan", href: "/pesanan" },
     { label: "Tentang", href: "/tentang" },
     { label: "Kontak", href: "/kontak" },
+    { label: "Admin", href: "/admin" },
   ];
 
   return (
